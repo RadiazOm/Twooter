@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConctactController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('contact', [ConctactController::class, 'index'])->name('contact');
+

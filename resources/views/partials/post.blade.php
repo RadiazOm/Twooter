@@ -1,8 +1,6 @@
-@section('post')
-    <div>
-        <h1>Post Title</h1>
-        <p>Post Description</p>
-        <h3>Post User</h3>
-    </div>
-@endsection
+<div>
+    <h1>username</h1>
+    <p>{{$post['description']}}</p>
+    <h3>{{$post['created_at']}}</h3>
+</div>
 
