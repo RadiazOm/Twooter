@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('description', '500');
             $table->string('image');
             $table->boolean('status');
+            $table->foreignId('user_id')->constrained();
 
             $table->timestamps();
         });

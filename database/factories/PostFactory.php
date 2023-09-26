@@ -20,6 +20,7 @@ class PostFactory extends Factory
         return [
             'description' => fake()->paragraph(),
             'image' => fake()->imageUrl(),
+            'user_id' => 1,
             'status' => 1,
         ];
     }
