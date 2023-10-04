@@ -1,17 +1,36 @@
 <div class="card m-md-5">
     <div class="card-header">
-        <div class="d-flex align-items-center">
-            <img class="profile-image" src="{{url("/img/users/" . $post->user->profile_picture)}}" alt="Profile picture of the user">
-            <div class="title m-3">{{$post->user->name}}</div>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex">
+                <img class="profile-image" src="{{url("/img/users/" . $post->user->profile_picture)}}" alt="Profile picture of the user">
+                <div class="title m-3">{{$post->user->name}}</div>
+            </div>
+            <div>
+                @if($post->user->id == auth()->user()->id)
+                    <a class="btn btn-primary" href="{{route('posts.edit', $post->id)}}">Edit</a>
+                    <a class="btn btn-danger" href="{{ route('posts.destroy', $post->id) }}"
+                       onclick="event.preventDefault();
+                                                     document.getElementById('{{$post->id}}').submit();">
+                        Delete
+                    </a>
+                    <form id="{{$post->id}}" action="{{ route('posts.destroy', $post->id) }}" method="POST" class="d-none">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                @endif
+
+            </div>
         </div>
     </div>
     <div class="card-body">
         <div class="content">{{$post->description}}</div>
         @if($post->image)
-            <img class="img-fluid" src="{{$post->image}}" alt="Image of the post">
+            <img class="img-fluid" src="{{url("/img/posts/" . $post->image)}}" alt="Image of the post">
         @endif
     </div>
-    <div class="card-footer">
+    <div class="card-footer d-flex justify-content-between">
+        <div class="fw-bold">Likes</div>
+        <div class="fw-bold">Comments</div>
         <div class="fw-bold">{{$post->created_at}}</div>
     </div>
 </div>

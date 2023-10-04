@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -17,7 +19,7 @@ class PostController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['index', 'show']);
     }
 
     /**
@@ -25,7 +27,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::all()->sortByDesc('created_at')->where('user_id', '!=', Auth::user()->id);
 
         return view('posts.home', compact('posts'));
     }
@@ -45,16 +47,22 @@ class PostController extends Controller
     {
         $data = $this->validator($request->all())->validate();
 
-//        dd($data);
+        $filename = '';
+        if (isset($data['image'])) {
+            $image = $data['image'];
+            $filename = time() . '.' . $image->getClientOriginalExtension();
 
+            $image->move(public_path('img/posts'), $filename);
+        }
 
         Post::create([
             'description' => $data['description'],
-            'image' => 'https://via.placeholder.com/640x480.png/00aa22?text=new-post',
+            'image' => $filename,
             'status' => 1,
-            'user_id' => 1
+            'user_id' => Auth::user()->id
         ]);
 
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -70,7 +78,11 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        if (Auth::user()->id !== $post->user_id) {
+            return redirect()->route('posts.index');
+        }
+
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -78,7 +90,28 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        if (Auth::user()->id !== $post->user_id) {
+            return redirect()->route('posts.index');
+        }
+
+        dd($post);
+
+        $data = $this->validator($request->all())->validate();
+
+        if (isset($data['image'])) {
+            $image = $data['image'];
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+
+            $image->move(public_path('img/posts'), $filename);
+
+            $post->image = $filename;
+        }
+
+        $post->description = $data['description'];
+
+        $post->save();
+
+        return redirect()->route('profile.posts');
     }
 
     /**
@@ -86,12 +119,20 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        if (Auth::user()->id !== $post->user_id) {
+            return redirect()->route('profile.posts');
+        }
+
+        $post->delete();
+
+        return redirect()->route('profile.posts');
     }
 
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'description' => ['required', 'string', 'max:255']]);
+            'description' => ['required', 'string', 'max:255'],
+            'image' => ['mimes:jpg,jpeg,png,gif,svg,webp', 'max:10000']
+        ]);
     }
 }
