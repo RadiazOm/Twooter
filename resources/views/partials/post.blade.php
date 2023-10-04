@@ -30,8 +30,8 @@
     </div>
     <div class="card-footer d-flex justify-content-between">
         <div class="fw-bold">Likes</div>
-        <a class="btn btn-primary" href="{{route('likes.toggle', auth()->user())}}">
-            Likes: {{$likes}}
+        <a class="btn btn-primary" href="">
+            Likes: {{$post->likes()->count()}}
         </a>
         <div class="fw-bold">Comments</div>
         <div class="fw-bold">{{$post->created_at}}</div>
