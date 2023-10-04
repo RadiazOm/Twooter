@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use App\Models\Post;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
+
 
 class PostController extends Controller
 {
@@ -28,6 +30,8 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::all()->sortByDesc('created_at')->where('user_id', '!=', Auth::user()->id);
+
+        dd($posts);
 
         return view('posts.home', compact('posts'));
     }
@@ -94,8 +98,6 @@ class PostController extends Controller
             return redirect()->route('posts.index');
         }
 
-        dd($post);
-
         $data = $this->validator($request->all())->validate();
 
         if (isset($data['image'])) {
@@ -104,6 +106,7 @@ class PostController extends Controller
 
             $image->move(public_path('img/posts'), $filename);
 
+            File::delete(public_path('img/posts/' . $post->image));
             $post->image = $filename;
         }
 

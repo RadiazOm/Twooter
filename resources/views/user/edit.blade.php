@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <form method="POST" action="{{ route('profile.update', $user) }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('user.update', $user) }}" enctype="multipart/form-data">
                     @method('PUT')
                     @csrf
                     <label for="name">Name</label>
@@ -20,14 +20,14 @@
 
                     <img src="{{old('profile-picture', url("/img/users/" . $user->profile_picture))}}" alt="Picture to be uploaded">
 
-                    @error('image')
+                    @error('profile-picture')
                     <div class="invalid-feedback">
                         {{$message}}
                     </div>
                     @enderror
 
                     <button type="submit" class="btn btn-primary">
-                        Post
+                        Change
                     </button>
                 </form>
             </div>

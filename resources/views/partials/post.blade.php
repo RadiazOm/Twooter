@@ -3,7 +3,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex">
                 <img class="profile-image" src="{{url("/img/users/" . $post->user->profile_picture)}}" alt="Profile picture of the user">
-                <div class="title m-3">{{$post->user->name}}</div>
+                <div class="m-3 h5">{{$post->user->name}}</div>
             </div>
             <div>
                 @if($post->user->id == auth()->user()->id)
@@ -30,6 +30,9 @@
     </div>
     <div class="card-footer d-flex justify-content-between">
         <div class="fw-bold">Likes</div>
+        <a class="btn btn-primary" href="{{route('likes.toggle', auth()->user())}}">
+            Likes: {{$likes}}
+        </a>
         <div class="fw-bold">Comments</div>
         <div class="fw-bold">{{$post->created_at}}</div>
     </div>

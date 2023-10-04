@@ -7,8 +7,8 @@
                 <img class="profile-image" src="{{url("/img/users/" . auth()->user()->profile_picture)}}" alt="">
                 <div>{{auth()->user()->name}}</div>
                 <div>{{auth()->user()->email}}</div>
-                <a href="{{route('profile.edit', auth()->user())}}">edit</a>
-                <a href="{{route('profile.posts')}}">my posts</a>
+                <a href="{{route('user.edit', auth()->user()->id)}}">edit</a>
+                <a href="{{route('user.posts')}}">my posts</a>
             </div>
         </div>
     </div>

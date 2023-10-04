@@ -2,18 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class ProfileController extends Controller
 {
+    public function __construct() {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('profile.home');
+        return view('user.home');
+    }
+
+    public function posts() {
+        $posts = Post::all()->where('user_id', '=', \Auth::user()->id)->sortByDesc('created_at');
+
+        return view('user.posts', compact('posts'));
     }
 
     /**
@@ -45,7 +57,11 @@ class ProfileController extends Controller
      */
     public function edit(User $user)
     {
-        return view('profile.edit', compact('user'));
+        if (Auth::user()->id !== $user->id) {
+            return redirect()->route('user.index');
+        }
+
+        return view('user.edit', compact('user'));
     }
 
     /**
@@ -55,25 +71,26 @@ class ProfileController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'profile-picture' => 'mimes:jpg,jpeg,png,gif,svg,webp|max:10000'
+            'profile-picture' => 'required|mimes:jpg,jpeg,png,gif,svg,webp|max:10000'
         ]);
 
-        dd($user);
 
-        if ($request->input('profile-picture') !== null) {
-            $image = $request->input('profile-picture');
+        if ($request->file('profile-picture') !== null) {
+            $image = $request->file('profile-picture');
             $filename = time() . '.' . $image->getClientOriginalExtension();
 
             $image->move(public_path('img/users'), $filename);
 
+            File::delete(public_path('img/users/' . $user->profile_picture));
             $user->profile_picture = $filename;
         }
 
         $user->name = $request->input('name');
 
+
         $user->save();
 
-        return redirect()->route('profile.posts');
+        return redirect()->route('user.posts');
 
     }
 

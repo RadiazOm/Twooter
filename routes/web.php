@@ -27,11 +27,9 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::resource('posts', PostController::class);
 
-Route::resource('profile', ProfileController::class);
+Route::get('/user/posts', [ProfileController::class, 'posts'])->name('user.posts');
 
-//Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-//Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::get('/profile/posts', [ProfileController::class, 'posts'])->name('profile.posts');
-//Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::resource('user', ProfileController::class);
+
 
 
