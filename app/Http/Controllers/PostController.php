@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
+use function Laravel\Prompts\select;
 
 
 class PostController extends Controller
@@ -31,7 +32,11 @@ class PostController extends Controller
     {
         $posts = Post::all()->sortByDesc('created_at')->where('user_id', '!=', Auth::user()->id);
 
-        dd($posts);
+        $likes = Like::all("post_id");
+//        $likesCounted = array_count_values($likes);
+//        foreach ($posts as $post) {
+//            $post->likes() = array_search($post->id, $likesCounted);
+//        }
 
         return view('posts.home', compact('posts'));
     }
