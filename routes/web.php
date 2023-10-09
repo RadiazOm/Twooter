@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ConctactController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -29,7 +31,12 @@ Route::resource('posts', PostController::class);
 
 Route::get('/user/posts', [ProfileController::class, 'posts'])->name('user.posts');
 
+Route::post('/comments/store{post}', [CommentController::class, 'store'])->name('comments.store');
+
 Route::resource('user', ProfileController::class);
+
+Route::get('like/toggle/{post}', [LikeController::class, 'toggle'])->name('like.toggle');
+
 
 
 
