@@ -32,6 +32,47 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     enabledTransports: ['ws', 'wss'],
 // });
 
-function LikeComment() {
-    // axios.get('')
+let element
+
+window.addEventListener('load', init);
+
+function init() {
+    let postContainer = document.getElementById('posts')
+    postContainer.addEventListener('click', LikeClickHandler)
+}
+
+function LikeClickHandler(e) {
+    element = e.target;
+    if (element.id !== 'like') {
+        return;
+    }
+    console.log(element.dataset.id)
+    getJSONdata(`http://127.0.0.1:8000/like/toggle/${element.dataset.id}`, likeButtonchange)
+}
+
+function getJSONdata(apiUrl, successHandler)
+{
+    fetch(apiUrl)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+            return response.json();
+        })
+        .then(successHandler)
+        .catch(ajaxErrorHandler);
+}
+
+function likeButtonchange(state) {
+    if (state) {
+        element.classList.add('btn-primary')
+        element.classList.remove('btn-outline-primary')
+        let number = parseFloat(element.innerHTML)
+        element.innerHTML = `likes: ${number + 1}`
+    } else {
+        element.classList.add('btn-outline-primary')
+        element.classList.remove('btn-primary')
+        let number = parseFloat(element.innerHTML)
+        element.innerHTML = `likes: ${number - 1}`
+    }
 }

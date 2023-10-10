@@ -4,9 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            @foreach($photos as $photo)
-                <img src="{{$photo->image}}" alt="">
-            @endforeach
+            <a href="{{route('posts.index')}}">Posts</a>
         </div>
     </div>
 </div>

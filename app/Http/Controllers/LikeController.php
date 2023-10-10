@@ -11,14 +11,16 @@ use Illuminate\Support\Facades\Auth;
 class LikeController extends Controller
 {
     public function toggle(Post $post) {
+        $state = true;
         if ($post->likes()->where('user_id', '=', Auth::id())->exists()) {
             $post->likes()->where('user_id', '=', Auth::id())->delete();
+            $state = false;
         } else {
             Like::create([
                 'post_id' => $post->id,
                 'user_id' => Auth::id()
             ]);
         }
-        return redirect()->route('posts.index');
+        return $state;
     }
 }

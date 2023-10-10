@@ -4,10 +4,9 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div>
+                <div id="posts">
                     @include('partials.post')
                 </div>
-                <h1 class="text-center m-5">Comments</h1>
                 <form class="m-md-5" method="POST" action="{{ route('comments.store', $post->id) }}" enctype="multipart/form-data">
                     @csrf
                     <label for="description">Description</label>
