@@ -38,6 +38,16 @@
                         </li>
                     </ul>
 
+                    <ul class="navbar-nav mb-auto">
+                        <form action="{{route('posts.search')}}" method="GET">
+                            <div class="input-group">
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
+                                <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+                            </div>
+                        </form>
+                    </ul>
+
+
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
@@ -83,6 +93,7 @@
         <main class="py-4">
             @yield('content')
         </main>
+
     </div>
 </body>
 </html>

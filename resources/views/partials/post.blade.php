@@ -29,9 +29,7 @@
         @endif
     </div>
     <div class="card-footer d-flex justify-content-between">
-        <a id="like" data-id="{{$post->id}}" class="btn @if($post->likes()->where('user_id', '=', auth()->id())->exists()) btn-outline-primary @else btn-primary @endif">
-            Likes: {{$post->likes()->count()}}
-        </a>
+        <a id="like" data-id="{{$post->id}}" class="btn @if($post->likes()->where('user_id', '=', auth()->id())->exists()) btn-outline-primary @else btn-primary @endif">Likes: {{$post->likes()->count()}}</a>
         <a class="btn btn-primary" href="{{route('posts.show', $post->id)}}">
             Comments: {{$post->comments()->count()}}
         </a>

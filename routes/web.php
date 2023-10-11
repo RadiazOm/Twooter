@@ -27,6 +27,8 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+Route::get('/posts/search', [PostController::class, 'find'])->name('posts.search');
+
 Route::resource('posts', PostController::class);
 
 Route::get('/user/posts', [ProfileController::class, 'posts'])->name('user.posts');

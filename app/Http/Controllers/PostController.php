@@ -42,6 +42,23 @@ class PostController extends Controller
     }
 
     /**
+     * Display a listing of the resource based on a query
+     */
+    public function find(Request $request)
+    {
+        $request->validate([
+            'query' => 'string'
+        ]);
+
+        $wildcard = '%' . $request->input('query') . '%';
+
+        $posts = Post::where('description', 'LIKE', $wildcard)->get()->sortByDesc('created_at');
+
+
+        return view('posts.search', compact('posts'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -119,7 +136,7 @@ class PostController extends Controller
 
         $post->save();
 
-        return redirect()->route('profile.posts');
+        return redirect()->route('user.posts');
     }
 
     /**
@@ -128,12 +145,12 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         if (Auth::user()->id !== $post->user_id) {
-            return redirect()->route('profile.posts');
+            return redirect()->route('user.posts');
         }
 
         $post->delete();
 
-        return redirect()->route('profile.posts');
+        return redirect()->route('user.posts');
     }
 
     protected function validator(array $data)

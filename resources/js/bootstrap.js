@@ -64,15 +64,23 @@ function getJSONdata(apiUrl, successHandler)
 }
 
 function likeButtonchange(state) {
-    if (state) {
-        element.classList.add('btn-primary')
-        element.classList.remove('btn-outline-primary')
-        let number = parseFloat(element.innerHTML)
-        element.innerHTML = `likes: ${number + 1}`
-    } else {
+    console.log(state[0])
+    if (state[0]) {
         element.classList.add('btn-outline-primary')
         element.classList.remove('btn-primary')
-        let number = parseFloat(element.innerHTML)
-        element.innerHTML = `likes: ${number - 1}`
+        let text = element.innerHTML.split(' ')
+        console.log(element.innerHTML)
+        let number = parseFloat(text[1]);
+        element.innerHTML = `Likes: ${number + 1}`
+    } else {
+        element.classList.add('btn-primary')
+        element.classList.remove('btn-outline-primary')
+        let text = element.innerHTML.split(' ');
+        let number = parseFloat(text[1]);
+        element.innerHTML = `Likes: ${number - 1}`
     }
+}
+
+function ajaxErrorHandler(e) {
+    console.log('Oops something went wrong: ' + e);
 }
