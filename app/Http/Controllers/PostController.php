@@ -6,6 +6,7 @@ use App\Models\Like;
 use App\Models\Post;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -40,14 +41,39 @@ class PostController extends Controller
      */
     public function find(Request $request)
     {
-        $request->validate([
-            'query' => 'string'
-        ]);
+//        $request->validate([
+//            'query' => 'string'
+//        ]);
+
+        $tagsString = $request->input('tags');
+        $tags = explode(' ', $tagsString);
 
         $wildcard = '%' . $request->input('query') . '%';
 
-        $posts = Post::where('description', 'LIKE', $wildcard)->where('status', '=', '1')->get()->sortByDesc('created_at');
+//        $posts = Post::where('description', 'LIKE', $wildcard)->where('status', '=', '1')->get()->sortByDesc('created_at');
 
+//        $posts = Post::where('description', 'LIKE', $wildcard)
+//            ->where('status', '=', '1')
+//            ->whereExists(function (Builder $query) use ($tags) {
+//                foreach ($tags as $tag) {
+//                    $query->orWhere('tags', '=', $tag);
+//                }
+//        })->get()->sortByDesc('created_at');
+
+        $query = Post::where('status', '=', '1')->with('tags');
+
+        if (!empty($request->input('query'))) {
+            $query->where('description', 'LIKE', $wildcard);
+        }
+        if (!empty($request->input('tags'))) {
+            $query->whereHas('tags', function (Builder $query) use ($tags) {
+                foreach ($tags as $tag) {
+                    $query->where('name', '=', $tag);
+                }
+            });
+//                ->toSql());
+        }
+        $posts = $query->get()->sortByDesc('created_at');
 
         return view('posts.search', compact('posts'));
     }
@@ -81,9 +107,9 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $likes = Auth::user()->likes()->count();
-        if ($likes < 5) {
-            return redirect()->route('posts.index');
-        }
+//        if ($likes < 5) {
+//            return redirect()->route('posts.index');
+//        }
 
         $data = $this->validator($request->all())->validate();
 

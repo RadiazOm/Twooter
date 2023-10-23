@@ -41,8 +41,17 @@
                     <ul class="navbar-nav mb-auto">
                         <form action="{{route('posts.search')}}" method="GET">
                             <div class="input-group">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Tags</button>
+                                <ul class="dropdown-menu" id="dropdown">
+                                    <li><a class="dropdown-item" data-id="game" href="#">Game</a></li>
+                                    <li><a class="dropdown-item" data-id="funny" href="#">Funny</a></li>
+                                    <li><a class="dropdown-item" data-id="business" href="#">Business</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" data-id="other" href="#">Other</a></li>
+                                </ul>
                                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
                                 <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+                                <input type="hidden" value="" name="tags" id="hidden-form">
                             </div>
                         </form>
                     </ul>
