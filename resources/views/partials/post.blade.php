@@ -7,15 +7,24 @@
             </div>
             <div>
                 @if($post->user->id == auth()->user()->id)
+                    <a class="btn @if($post->status) btn-secondary @else btn-outline-secondary @endif" href="{{route('posts.status', $post->id)}}"
+                       onclick="event.preventDefault();
+                                                     document.getElementById('{{$post->id}}STAT').submit();">
+                        @if($post->status) Active @else Inactive @endif
+                    </a>
                     <a class="btn btn-primary" href="{{route('posts.edit', $post->id)}}">Edit</a>
                     <a class="btn btn-danger" href="{{ route('posts.destroy', $post->id) }}"
                        onclick="event.preventDefault();
-                                                     document.getElementById('{{$post->id}}').submit();">
+                                                     document.getElementById('{{$post->id}}DEL').submit();">
                         Delete
                     </a>
-                    <form id="{{$post->id}}" action="{{ route('posts.destroy', $post->id) }}" method="POST" class="d-none">
+                    <form id="{{$post->id}}DEL" action="{{ route('posts.destroy', $post->id) }}" method="POST" class="d-none">
                         @csrf
                         @method('DELETE')
+                    </form>
+                    <form id="{{$post->id}}STAT" action="{{ route('posts.status', $post->id) }}" method="POST" class="d-none">
+                        @csrf
+                        @method('PATCH')
                     </form>
                 @endif
 

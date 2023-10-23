@@ -37,8 +37,13 @@ let element
 window.addEventListener('load', init);
 
 function init() {
-    let postContainer = document.getElementById('posts')
-    postContainer.addEventListener('click', LikeClickHandler)
+    try {
+        let postContainer = document.getElementById('posts')
+        postContainer.addEventListener('click', LikeClickHandler)
+    } catch (error) {
+
+    }
+
 }
 
 function LikeClickHandler(e) {
@@ -46,7 +51,6 @@ function LikeClickHandler(e) {
     if (element.id !== 'like') {
         return;
     }
-    console.log(element.dataset.id)
     getJSONdata(`http://127.0.0.1:8000/like/toggle/${element.dataset.id}`, likeButtonchange)
 }
 
@@ -64,12 +68,10 @@ function getJSONdata(apiUrl, successHandler)
 }
 
 function likeButtonchange(state) {
-    console.log(state[0])
     if (state[0]) {
         element.classList.add('btn-outline-primary')
         element.classList.remove('btn-primary')
         let text = element.innerHTML.split(' ')
-        console.log(element.innerHTML)
         let number = parseFloat(text[1]);
         element.innerHTML = `Likes: ${number + 1}`
     } else {

@@ -27,13 +27,15 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+Route::patch('/posts/status/{post}', [PostController::class, 'status'])->name('posts.status');
+
 Route::get('/posts/search', [PostController::class, 'find'])->name('posts.search');
 
 Route::resource('posts', PostController::class);
 
 Route::get('/user/posts', [ProfileController::class, 'posts'])->name('user.posts');
 
-Route::post('/comments/store{post}', [CommentController::class, 'store'])->name('comments.store');
+Route::post('/comments/store/{post}', [CommentController::class, 'store'])->name('comments.store');
 
 Route::resource('user', ProfileController::class);
 

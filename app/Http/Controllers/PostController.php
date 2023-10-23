@@ -30,13 +30,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all()->sortByDesc('created_at')->where('user_id', '!=', Auth::user()->id);
-
-        $likes = Like::all("post_id");
-//        $likesCounted = array_count_values($likes);
-//        foreach ($posts as $post) {
-//            $post->likes() = array_search($post->id, $likesCounted);
-//        }
+        $posts = Post::all()->sortByDesc('created_at')->where('user_id', '!=', Auth::user()->id)->where('status', '=', '1');
 
         return view('posts.home', compact('posts'));
     }
@@ -52,10 +46,21 @@ class PostController extends Controller
 
         $wildcard = '%' . $request->input('query') . '%';
 
-        $posts = Post::where('description', 'LIKE', $wildcard)->get()->sortByDesc('created_at');
+        $posts = Post::where('description', 'LIKE', $wildcard)->where('status', '=', '1')->get()->sortByDesc('created_at');
 
 
         return view('posts.search', compact('posts'));
+    }
+
+    public function status(Post $post) {
+        if (Auth::user()->id !== $post->user_id) {
+            return redirect()->route('posts.index');
+        }
+        $post->status = !$post->status;
+
+        $post->save();
+
+        return redirect()->route('user.posts');
     }
 
     /**
@@ -63,7 +68,11 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('posts.create');
+        $likes = Auth::user()->likes()->count();
+        if ($likes >= 5) {
+            return view('posts.create');
+        }
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -71,6 +80,11 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        $likes = Auth::user()->likes()->count();
+        if ($likes < 5) {
+            return redirect()->route('posts.index');
+        }
+
         $data = $this->validator($request->all())->validate();
 
         $filename = '';
@@ -96,6 +110,9 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        if ($post->status != 1) {
+            return redirect()->route('posts.index');
+        }
         return view('posts.show', compact('post'));
     }
 
