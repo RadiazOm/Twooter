@@ -36,6 +36,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{route('posts.create')}}">+Create+</a>
                         </li>
+                        @if(!auth()->guest() && auth()->user()->admin == 1)
+                            <li>
+                                <a class="nav-link" href="{{route('admin.index')}}">Admin</a>
+                            </li>
+                        @endif
                     </ul>
 
                     <ul class="navbar-nav mb-auto">
@@ -43,11 +48,9 @@
                             <div class="input-group">
                                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Tags</button>
                                 <ul class="dropdown-menu" id="dropdown">
-                                    <li><a class="dropdown-item" data-id="game" href="#">Game</a></li>
-                                    <li><a class="dropdown-item" data-id="funny" href="#">Funny</a></li>
-                                    <li><a class="dropdown-item" data-id="business" href="#">Business</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" data-id="other" href="#">Other</a></li>
+                                    @foreach(\App\Models\Tag::all() as $tag)
+                                        <li><a class="dropdown-item" data-id="{{$tag->id}}" href="#">{{$tag->name}}</a></li>
+                                    @endforeach
                                 </ul>
                                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
                                 <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>

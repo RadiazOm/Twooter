@@ -68,7 +68,7 @@ class PostController extends Controller
         if (!empty($request->input('tags'))) {
             $query->whereHas('tags', function (Builder $query) use ($tags) {
                 foreach ($tags as $tag) {
-                    $query->where('name', '=', $tag);
+                    $query->where('tags.id', '=', $tag);
                 }
             });
 //                ->toSql());
@@ -107,9 +107,9 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $likes = Auth::user()->likes()->count();
-//        if ($likes < 5) {
-//            return redirect()->route('posts.index');
-//        }
+        if ($likes < 5) {
+            return redirect()->route('posts.index');
+        }
 
         $data = $this->validator($request->all())->validate();
 
