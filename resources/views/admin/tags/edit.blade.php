@@ -4,8 +4,9 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <form method="POST" action="{{ route('tags.update') }}">
+                <form method="POST" action="{{ route('tags.update', $tag) }}">
                     @csrf
+                    @method('PUT')
                     <label for="name">name</label>
                     <input id="name" type="text" class="form-control @error('name')is-invalid @enderror" name="name" value="{{old('name', $tag->name)}}">
                     @error('name')
@@ -15,7 +16,7 @@
                     @enderror
 
                     <button type="submit" class="btn btn-primary">
-                        Post
+                        Confirm
                     </button>
                 </form>
             </div>

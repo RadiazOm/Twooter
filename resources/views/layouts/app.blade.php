@@ -52,7 +52,7 @@
                                         <li><a class="dropdown-item" data-id="{{$tag->id}}" href="#">{{$tag->name}}</a></li>
                                     @endforeach
                                 </ul>
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query" value="{{request('query', '')}}">
                                 <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
                                 <input type="hidden" value="" name="tags" id="hidden-form">
                             </div>

@@ -37,6 +37,13 @@
             <img class="img-fluid" src="{{url("/img/posts/" . $post->image)}}" alt="Image of the post">
         @endif
     </div>
+    @if($post->tags()->exists())
+        <div class="card-body">
+            @foreach($post->tags()->get() as $tag)
+                <a href="{{route('posts.search', 'tags=' . $tag->id)}}" class="btn btn-outline-primary">{{$tag->name}}</a>
+            @endforeach
+        </div>
+    @endif
     <div class="card-footer d-flex justify-content-between">
         <a id="like" data-id="{{$post->id}}" class="btn @if($post->likes()->where('user_id', '=', auth()->id())->exists()) btn-outline-primary @else btn-primary @endif">Likes: {{$post->likes()->count()}}</a>
         <a class="btn btn-primary" href="{{route('posts.show', $post->id)}}">

@@ -83,6 +83,8 @@ class TagController extends Controller
         $tag->name = $data['name'];
 
         $tag->save();
+
+        return redirect()->route('admin.index');
     }
 
     /**

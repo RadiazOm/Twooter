@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Like;
 use App\Models\Post;
 use App\Http\Controllers\Controller;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -31,7 +32,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all()->sortByDesc('created_at')->where('user_id', '!=', Auth::user()->id)->where('status', '=', '1');
+        if (Auth::guest()) {
+            $posts = Post::all()->sortByDesc('created_at')->where('status', '=', '1');
+        } else {
+            $posts = Post::all()->sortByDesc('created_at')->where('user_id', '!=', Auth::user()->id)->where('status', '=', '1');
+        }
 
         return view('posts.home', compact('posts'));
     }
@@ -95,7 +100,7 @@ class PostController extends Controller
     public function create()
     {
         $likes = Auth::user()->likes()->count();
-        if ($likes >= 5) {
+        if ($likes >= 5 || Auth::user()->admin === 1) {
             return view('posts.create');
         }
         return redirect()->route('posts.index');
@@ -107,7 +112,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $likes = Auth::user()->likes()->count();
-        if ($likes < 5) {
+        if ($likes < 5 && Auth::user()->admin != 1) {
             return redirect()->route('posts.index');
         }
 
@@ -121,12 +126,18 @@ class PostController extends Controller
             $image->move(public_path('img/posts'), $filename);
         }
 
-        Post::create([
+        $post = Post::create([
             'description' => $data['description'],
             'image' => $filename,
             'status' => 1,
-            'user_id' => Auth::user()->id
+            'user_id' => Auth::user()->id,
         ]);
+
+        unset($data['description'], $data['image']);
+
+        foreach ($data as $item) {
+            $post->tags()->attach($item);
+        }
 
         return redirect()->route('posts.index');
     }
@@ -179,6 +190,8 @@ class PostController extends Controller
 
         $post->save();
 
+        //todo: MAKE THE FUCKING TAGS BE EDITABLE :(((((((((
+
         return redirect()->route('user.posts');
     }
 
@@ -198,9 +211,23 @@ class PostController extends Controller
 
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        $tags = Tag::all();
+        $validationArray = [
             'description' => ['required', 'string', 'max:255'],
             'image' => ['mimes:jpg,jpeg,png,gif,svg,webp', 'max:10000']
-        ]);
+        ];
+        foreach ($tags as $tag) {
+            $validationArray[$tag->name] = ['numeric'];
+        }
+        return Validator::make($data, $validationArray);
     }
+//    protected function validatorTags(array $data)
+//    {
+//        $tags = Tag::all();
+//        $validationArray = [];
+//        foreach ($tags as $tag) {
+//            $validationArray[$tag->id] = ['numeric'];
+//        }
+//        return Validator::make($data, $validationArray);
+//    }
 }

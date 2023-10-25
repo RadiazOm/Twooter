@@ -21,6 +21,21 @@
                             {{$message}}
                         </div>
                     @enderror
+                    <div>
+                        Tags
+                    </div>
+                    @foreach(\App\Models\Tag::all() as $tag)
+                        <div class="form-check">
+                            <label for="{{$tag->name}}" class="form-check-label">{{$tag->name}}</label>
+                            <input id="{{$tag->name}}" type="checkbox" class="form-check-input @error($tag->name)is-invalid @enderror" name="{{$tag->name}}" value="{{$tag->id}}">
+                        </div>
+                        @error($tag->name)
+                        <div class="invalid-feedback">
+                            {{$message}}
+                        </div>
+                        @enderror
+                    @endforeach
+
                     <button type="submit" class="btn btn-primary">
                         Post
                     </button>
